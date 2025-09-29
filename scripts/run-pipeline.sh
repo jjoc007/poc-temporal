@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-node -e "require('ts-node/register'); const { startPipelineExample } = require('../src/index'); startPipelineExample().then((handle) => { console.log(JSON.stringify({ workflowId: handle.workflowId, runId: handle.firstExecutionRunId }, null, 2)); }).catch((err) => { console.error(err); process.exit(1); });"
+cd "$(dirname "$0")/.."
+npx ts-node -e "import { startPipelineExample } from './src/index'; startPipelineExample().then((handle: any) => { console.log(JSON.stringify({ workflowId: handle.workflowId, runId: handle.firstExecutionRunId }, null, 2)); }).catch((err: any) => { console.error(err); process.exit(1); });"

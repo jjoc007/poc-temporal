@@ -17,22 +17,22 @@ export interface DeployWorkflowInput {
 }
 
 const quickActivityOptions = {
-  startToCloseTimeout: '10 seconds',
+  startToCloseTimeout: '10s',
   retry: {
     maximumAttempts: 3,
-    initialInterval: '1 second',
+    initialInterval: '1s',
     backoffCoefficient: 2,
   },
-};
+} as const;
 
 const longActivityOptions = {
-  startToCloseTimeout: '1 minute',
+  startToCloseTimeout: '1m',
   retry: {
     maximumAttempts: 2,
-    initialInterval: '5 seconds',
+    initialInterval: '5s',
     backoffCoefficient: 2,
   },
-};
+} as const;
 
 const quickActivities = proxyActivities<{
   logStart: typeof logStart;

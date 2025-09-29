@@ -54,13 +54,10 @@ export async function PipelineWorkflow(input: PipelineWorkflowInput) {
 
     const childHandles = await Promise.all(
       wave.map((scope) =>
-        startChild(DeployWorkflow, {
+        startChild('DeployWorkflow', {
           args: [findDeployment(scope)],
           workflowId: `${workflowInfo().workflowId}:${scope}:wave${waveIndex + 1}`,
           taskQueue: 'deploy-queue',
-          searchAttributes: {
-            ParentWorkflowId: workflowInfo().workflowId,
-          },
         })
       )
     );
@@ -69,11 +66,11 @@ export async function PipelineWorkflow(input: PipelineWorkflowInput) {
       childHandles.map(async (handle) => {
         try {
           const result = await handle.result();
-          summaries.push({ scope: result.scope, status: 'COMPLETED', runId: handle.runId });
+          summaries.push({ scope: result.scope, status: 'COMPLETED', runId: handle.firstExecutionRunId });
           return { status: 'COMPLETED' as const, result };
         } catch (err) {
           const error = err instanceof Error ? err.message : JSON.stringify(err);
-          summaries.push({ scope: handle.workflowId, status: 'FAILED', runId: handle.runId, error });
+          summaries.push({ scope: handle.workflowId, status: 'FAILED', runId: handle.firstExecutionRunId, error });
           return { status: 'FAILED' as const, error, handle };
         }
       })
